@@ -1,52 +1,82 @@
-Hai! Selamat datang di repositori Manajer Kata Sandi pribadi saya. Ini adalah aplikasi desktop sederhana tapi aman yang saya buat menggunakan Python untuk menyimpan semua kredensial akun saya.
+# 🛡️ Manajer Kata Sandi Aman (PyQt5 & MySQL)
 
-Dibanding menyimpan di sticky notes atau spreadsheet, aplikasi ini menggunakan kriptografi yang serius untuk memastikan data saya bener-bener aman dari mata-mata nakal.
+Aplikasi desktop Manajer Kata Sandi yang dirancang untuk menyimpan kredensial akun secara lokal di database MySQL dengan keamanan tingkat tinggi.
 
-🌟 Kenapa Aplikasi Ini Keren?
-Pintu Gerbang Super Aman: Aplikasi dikunci dengan Kata Sandi Master. Sandi ini di-hash pakai Argon2 — ini seperti bouncer super kuat yang menjaga club data Anda.
+## ✨ Fitur Utama
 
-Data Enkripsi Total: Semua password yang Anda simpan di MySQL akan diubah menjadi kode rahasia yang tidak bisa dibaca pakai Fernet (kriptografi serius, lho!).
+* **Autentikasi Aman (Argon2):** Kata Sandi Master pengguna di-*hash* menggunakan **Argon2**, salah satu fungsi *Key Derivation* dan *Hashing* sandi terkuat yang direkomendasikan saat ini.
+* **Enkripsi Data (Fernet):** Semua kata sandi sensitif dienkripsi menggunakan standar kriptografi **Fernet (AES 128-bit CBC)** sebelum disimpan sebagai *BLOB* di database MySQL.
+* **Kunci Deterministik (SHA256):** Kunci enkripsi Fernet diturunkan secara konsisten dari Kata Sandi Master menggunakan **SHA256**. Ini memastikan Anda dapat mendekripsi data Anda dengan benar setiap kali Anda masuk.
+* **UI Responsif (PyQt5 & Threading):** Semua operasi I/O yang memakan waktu (koneksi DB, *hashing*, enkripsi) dijalankan pada *Worker Thread* (`QRunnable`) untuk menjaga antarmuka pengguna tetap lancar.
+* **Operasi CRUD Lengkap:** Mendukung penambahan, melihat, pembaruan, dan penghapusan entri kata sandi.
+* **Fungsi Pencarian:** Filter cepat berdasarkan Layanan (*Service*) atau *Username*.
 
-Gak Bakal Lupa Kunci: Meskipun Anda tutup aplikasinya, kunci enkripsi yang diturunkan dari Sandi Master Anda akan selalu sama. Jadi, Anda tidak akan mengalami lagi drama "sandi tersimpan tapi tidak bisa dibuka" (kecuali Anda lupa Sandi Master Anda sendiri, ya!).
+## 🛠️ Teknologi dan Dependensi
 
-Anti-Ngadat: Semua tugas berat (seperti hashing dan komunikasi DB) dikerjakan di balik layar (menggunakan Worker Thread), jadi aplikasinya tetap lancar jaya dan gak bikin freeze.
+* **Python** (3.x)
+* **PyQt5** (GUI Framework)
+* **MySQL** (Database Backend)
+* **`cryptography`** (Pustaka untuk Fernet)
+* **`argon2-cffi`** (Pustaka untuk *Hashing* Master Password)
+* **`mysql-connector-python`** (Konektor Database)
 
-Fitur Dasar Lengkap: Cari, Tambah, Edit, Hapus—semua ada.
+## ⚙️ Instalasi dan Setup
 
-💻 Resep Setup (Cara Menjalankan)
-Ini yang Anda butuhkan sebelum bisa menjalankan aplikasinya.
+Ikuti langkah-langkah berikut untuk menginstal dan menjalankan aplikasi.
 
-1. Bahan-Bahan Dasar
-Python 3.x
+### 1. Setup Database MySQL
 
-Server MySQL (Pastikan sudah running di PC Anda!)
+Aplikasi ini memerlukan server MySQL yang berjalan dan terhubung ke database bernama `password_manager`.
 
-2. Dapur SQL (Setup Database)
-Aplikasi ini mencari database bernama password_manager. Anda bisa membuatnya cepat di MySQL client Anda (seperti HeidiSQL, DBeaver, dll.):
+1. Pastikan Server MySQL Anda berjalan.
+2. Buka klien MySQL Anda (Terminal, Workbench, atau Navicat).
+3. Buat database yang diperlukan:
+```sql
+CREATE DATABASE IF NOT EXISTS password_manager;
 
-SQL
+```
 
-CREATE DATABASE password_manager;
-3. Meracik Python
-Instal semua library yang diperlukan:
 
-Bash
+4. Verifikasi kredensial di `db.py` (secara *default* menggunakan `user='root', password=''`).
 
-# Pastikan Anda berada di folder proyek ini
+### 2. Instalasi Dependensi Python
+
+Navigasi ke direktori proyek dan instal semua kebutuhan melalui `pip`.
+
+```bash
+# Pastikan Anda telah membuat virtual environment (opsional, tapi disarankan)
 pip install pyqt5 cryptography argon2-cffi mysql-connector-python
-4. Panaskan Mesin!
-Waktunya jalankan aplikasinya:
 
-Bash
+```
 
+### 3. Menjalankan Aplikasi
+
+Jalankan *file* utama:
+
+```bash
 python main.py
-👣 Petunjuk Penggunaan Singkat
-Daftar Pertama: Jika ini pertama kali, Anda akan diminta membuat Kata Sandi Master. JANGAN SAMPAI LUPA!
 
-Login Santai: Setiap kali buka, masukkan Sandi Master Anda.
+```
 
-Tambah Data: Klik Tambah Baru, masukkan Layanan (misalnya, Netflix), Username, dan Password asli. Lalu, klik Simpan.
+## 🚀 Panduan Penggunaan
 
-Intip Rahasia: Pilih baris data, lalu klik Lihat PW untuk mendekripsi dan menampilkan sandi aslinya. Hanya Sandi Master yang benar yang bisa melakukannya.
+1. **Pendaftaran Awal:** Saat dijalankan pertama kali, aplikasi akan mendeteksi tidak adanya `Master User` dan meminta Anda mendaftarkan Kata Sandi Master.
+2. **Login:** Gunakan Kata Sandi Master yang telah Anda daftarkan untuk masuk. Kunci enkripsi akan diturunkan dari sandi ini.
+3. **Mengelola Entri:**
+* Klik **Tambah Baru** untuk memasukkan kredensial baru.
+* Pilih baris dan klik **Lihat PW** untuk mendekripsi dan menampilkan kata sandi yang tersimpan.
 
-Cari Cepat: Ketik nama layanan atau username di kolom pencarian, lalu tekan Cari.
+
+
+## ❗️ Penting: Kesalahan Dekripsi Entri Lama
+
+Jika Anda mencoba mendekripsi entri yang dibuat **sebelum** perbaikan *key derivation* pada `util.py` (yaitu, sebelum *commit* yang memperbaiki masalah kunci non-deterministik), Anda akan mendapatkan kesalahan dekripsi.
+
+* Ini adalah perilaku yang diharapkan, karena kunci enkripsi lama tidak dapat direplikasi.
+* **Solusi:** Hapus entri yang lama dan masukkan kembali data tersebut. Semua entri yang dibuat dengan kode versi terbaru ini akan dijamin dapat diakses kembali.
+
+---
+
+## 🤝 Kontribusi
+
+Jika Anda menemukan *bug* atau memiliki saran perbaikan, jangan ragu untuk membuka *Issue* atau mengirimkan *Pull Request*.
