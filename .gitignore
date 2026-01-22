@@ -1,3 +1,22 @@
+# Database & Secrets
 .env
+*.db
+*.sqlite
+
+# Python Environment & Cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+
+# PyInstaller (Hasil Build EXE)
+build/
+dist/
+*.spec
+
+# IDE Settings
+.vscode/
+.idea/
