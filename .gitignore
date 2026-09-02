@@ -20,3 +20,4 @@ dist/
 # IDE Settings
 .vscode/
 .idea/
+node_modules/
